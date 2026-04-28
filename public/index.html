@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreelancerPro KE — Know Your Worth</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--bg:#060E1A;--bg2:#0D1B2E;--bg3:#112240;--accent:#00C896;--accent2:#00A87E;--gold:#F5B800;--red:#FF4D6D;--text:#E8F0FE;--muted:#7A8BA0;--border:rgba(0,200,150,0.15);--card:rgba(13,27,46,0.9)}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 80% 50% at 20% 20%,rgba(0,200,150,.06) 0%,transparent 60%),
+             radial-gradient(ellipse 60% 40% at 80% 80%,rgba(0,100,200,.05) 0%,transparent 60%)}
+.banner{background:linear-gradient(90deg,var(--accent2),var(--accent));color:#060E1A;text-align:center;padding:10px 20px;font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.04em;position:relative;z-index:10}
+.banner span{margin:0 6px;opacity:.7}
+header{padding:28px 24px 0;position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;max-width:900px;margin:0 auto;gap:12px;flex-wrap:wrap}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;color:var(--accent);letter-spacing:-.02em}
+.logo sup{font-size:.5rem;background:var(--gold);color:#000;padding:2px 5px;border-radius:4px;margin-left:4px;vertical-align:super}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.user-chip{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:.78rem;color:var(--muted);display:none;align-items:center;gap:6px}
+.user-chip.show{display:flex}
+.user-chip .premium-dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.btn-header{font-family:'Syne',sans-serif;font-weight:700;font-size:.72rem;padding:6px 14px;border-radius:20px;cursor:pointer;letter-spacing:.05em;transition:transform .2s,box-shadow .2s;border:none}
+.btn-upgrade{background:linear-gradient(135deg,var(--gold),#e5a000);color:#000;box-shadow:0 4px 15px rgba(245,184,0,.3)}
+.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,184,0,.4)}
+.btn-login-h{background:transparent;color:var(--accent);border:1px solid var(--border)}
+.btn-login-h:hover{background:rgba(0,200,150,.08)}
+.btn-logout{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,.08);display:none}
+.btn-logout.show{display:block}
+.hero{text-align:center;padding:36px 24px 20px;position:relative;z-index:5;max-width:700px;margin:0 auto}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.9rem,5vw,3rem);line-height:1.15;margin-bottom:12px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero p{color:var(--muted);font-size:1rem;line-height:1.6}
+.tabs-wrapper{max-width:900px;margin:28px auto 0;padding:0 16px;position:relative;z-index:5}
+.tabs{display:flex;gap:4px;background:var(--bg2);padding:5px;border-radius:14px;border:1px solid var(--border)}
+.tab-btn{flex:1;padding:11px 8px;background:transparent;border:none;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;font-size:.8rem;letter-spacing:.03em;border-radius:10px;cursor:pointer;transition:all .25s;white-space:nowrap}
+.tab-btn.active{background:var(--accent);color:#060E1A;box-shadow:0 4px 15px rgba(0,200,150,.35)}
+.tab-btn:hover:not(.active){color:var(--text);background:var(--bg3)}
+.content{max-width:900px;margin:0 auto;padding:20px 16px 60px;position:relative;z-index:5}
+.tab-panel{display:none}.tab-panel.active{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px;margin-bottom:16px;backdrop-filter:blur(10px)}
+.card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+label{font-size:.78rem;color:var(--muted);font-weight:500;letter-spacing:.03em;text-transform:uppercase}
+input,select{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,200,150,.12)}
+select option{background:var(--bg2)}
+.segment{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px}
+.seg-btn{flex:1;padding:8px 4px;background:transparent;border:none;color:var(--muted);font-size:.78rem;font-family:'Syne',sans-serif;font-weight:600;border-radius:7px;cursor:pointer;transition:all .2s}
+.seg-btn.active{background:var(--accent);color:#060E1A}
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+@media(max-width:550px){.results-grid{grid-template-columns:1fr}}
+.result-box{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:18px;transition:border-color .2s}
+.result-box:hover{border-color:rgba(0,200,150,.4)}
+.result-box.highlight{border-color:var(--accent);background:rgba(0,200,150,.07)}
+.result-box.warning{border-color:var(--red);background:rgba(255,77,109,.07)}
+.result-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.result-value{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:var(--accent);line-height:1}
+.result-box.warning .result-value{color:var(--red)}
+.result-sub{font-size:.75rem;color:var(--muted);margin-top:4px}
+.btn{padding:12px 22px;border-radius:10px;border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;letter-spacing:.03em;transition:all .2s}
+.btn-primary{background:var(--accent);color:#060E1A;box-shadow:0 4px 15px rgba(0,200,150,.3)}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn-outline:hover{background:rgba(0,200,150,.08)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#e5a000);color:#000;box-shadow:0 4px 15px rgba(245,184,0,.3)}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,184,0,.4)}
+.btn-ghost{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid rgba(255,255,255,.08)}
+.btn-ghost:hover{color:var(--text)}
+.btn-sm{padding:8px 14px;font-size:.75rem;border-radius:8px}
+.btn-danger-sm{background:rgba(255,77,109,.15);color:var(--red);border:1px solid rgba(255,77,109,.3)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+.toggle-row{display:flex;align-items:center;gap:12px;padding:10px 0}
+.toggle{position:relative;width:44px;height:24px}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:var(--bg3);border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:.3s}
+.slider:before{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:var(--muted);border-radius:50%;transition:.3s}
+input:checked+.slider{background:var(--accent);border-color:var(--accent)}
+input:checked+.slider:before{transform:translateX(20px);background:#fff}
+.divider{height:1px;background:var(--border);margin:18px 0}
+.tip-box{background:rgba(245,184,0,.08);border:1px solid rgba(245,184,0,.25);border-radius:12px;padding:14px 18px;margin-top:14px;font-size:.85rem;line-height:1.5;color:#e8d88a}
+.warning-box{background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.25);border-radius:10px;padding:12px 16px;font-size:.82rem;color:#ff8fa3;margin-top:12px;line-height:1.5}
+.success-box{background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.25);border-radius:10px;padding:12px 16px;font-size:.82rem;color:var(--accent);margin-top:12px;line-height:1.5}
+.error-box{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);border-radius:10px;padding:14px 16px;font-size:.88rem;color:#ff8fa3;margin-bottom:14px;line-height:1.5}
+.premium-section{position:relative;border-radius:14px;border:1px dashed rgba(245,184,0,.3);padding:18px;margin-top:16px}
+.premium-overlay{position:absolute;inset:0;border-radius:14px;background:rgba(6,14,26,.8);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;transition:background .2s}
+.premium-overlay:hover{background:rgba(6,14,26,.65)}
+.lock-content{text-align:center}
+.lock-icon{font-size:2rem;margin-bottom:8px}
+.lock-label{font-family:'Syne',sans-serif;font-weight:700;color:var(--gold);font-size:.9rem}
+.lock-sub{font-size:.75rem;color:var(--muted);margin-top:4px}
+.invoice-row{display:grid;grid-template-columns:1fr 70px 110px 30px;gap:8px;align-items:center;margin-bottom:8px}
+@media(max-width:500px){.invoice-row{grid-template-columns:1fr 55px 90px 24px}}
+.tax-band{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:10px;margin-bottom:6px;background:var(--bg3);border:1px solid var(--border);font-size:.85rem}
+.tax-band.active-band{border-color:var(--accent);background:rgba(0,200,150,.07)}
+.tax-rate{font-family:'Syne',sans-serif;font-weight:700;color:var(--accent)}
+#invoice-preview{background:#fff;color:#111;border-radius:12px;padding:28px;margin-top:16px;font-size:.85rem;line-height:1.6}
+#invoice-preview h2{font-size:1.6rem;color:#00A87E;font-family:'Syne',sans-serif}
+#invoice-preview .inv-meta{color:#666;font-size:.78rem;margin:4px 0 16px}
+#invoice-preview table{width:100%;border-collapse:collapse;margin:16px 0}
+#invoice-preview th{background:#f5f5f5;padding:8px 10px;text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:#888}
+#invoice-preview td{padding:8px 10px;border-bottom:1px solid #eee}
+#invoice-preview .totals-row{display:flex;justify-content:flex-end}
+#invoice-preview .totals-table{width:240px}
+#invoice-preview .totals-table td{border:none}
+#invoice-preview .total-final{font-weight:700;font-size:1.1rem;color:#00A87E}
+#invoice-preview .mpesa-info{background:#f0fdf8;border:1px solid #00C89640;border-radius:8px;padding:12px;margin-top:14px;font-size:.8rem}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);z-index:100;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:22px;padding:32px;max-width:440px;width:100%;animation:modalIn .3s ease;position:relative;max-height:90vh;overflow-y:auto}
+@keyframes modalIn{from{opacity:0;transform:scale(.94) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--bg3);border:none;color:var(--muted);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:color .2s}
+.modal-close:hover{color:var(--text)}
+.modal h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.35rem;margin-bottom:8px}
+.modal-price{font-family:'Syne',sans-serif;font-weight:800;font-size:2rem;color:var(--gold);margin:10px 0}
+.modal-price span{font-size:1rem;color:var(--muted)}
+.feature-list{list-style:none;margin:12px 0}
+.feature-list li{padding:5px 0;font-size:.87rem;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:8px}
+.feature-list li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0}
+.mpesa-logo{display:flex;align-items:center;gap:8px;background:rgba(0,200,150,.08);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin:12px 0;font-size:.82rem;color:var(--muted)}
+.phone-input-row{display:flex;gap:8px;margin:10px 0}
+.phone-prefix{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--muted);font-size:.9rem;white-space:nowrap}
+.stk-state{display:none}.stk-state.active{display:block}
+.stk-spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pulse-dot{display:inline-block;width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 1.5s ease-in-out infinite;margin-right:6px}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.steps{display:flex;gap:8px;margin-bottom:20px}
+.step{flex:1;height:3px;background:var(--bg3);border-radius:2px;transition:background .4s}
+.step.done{background:var(--accent)}.step.active{background:var(--gold);animation:stepPulse 1s ease-in-out infinite}
+@keyframes stepPulse{0%,100%{opacity:1}50%{opacity:.5}}
+/* Auth modal tabs */
+.auth-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:20px}
+.auth-tab{flex:1;padding:9px;border:none;background:transparent;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;border-radius:8px;cursor:pointer;transition:all .2s}
+.auth-tab.active{background:var(--accent);color:#060E1A}
+.auth-panel{display:none}.auth-panel.active{display:block}
+.form-group-modal{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.form-group-modal label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+footer{text-align:center;padding:24px;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);position:relative;z-index:5}
+footer a{color:var(--accent);text-decoration:none}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="banner">
+  🇰🇪 Built for Kenyan Freelancers <span>—</span> Know Your Worth, Get Paid Fairly <span>—</span> M-Pesa Ready
+</div>
+
+<header>
+  <div class="logo">FreelancerPro<sup>KE</sup></div>
+  <div class="header-right">
+    <div class="user-chip" id="user-chip">
+      <div class="premium-dot" id="premium-dot" style="display:none"></div>
+      <span id="user-name-chip">Loading...</span>
+    </div>
+    <button class="btn-header btn-login-h" id="btn-auth" onclick="openAuthModal()">Login / Sign Up</button>
+    <button class="btn-header btn-upgrade" id="btn-upgrade" onclick="openPayModal()">⭐ Upgrade — Ksh 399</button>
+    <button class="btn-header btn-logout" id="btn-logout" onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Stop <em>Undercharging.</em><br>Start Earning What You're Worth.</h1>
+  <p>The only tool built for Kenyan freelancers — calculate your real rate, generate M-Pesa invoices, and estimate your KRA taxes. Free forever.</p>
+</div>
+
+<div class="tabs-wrapper">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('rate',this)">📐 Rate Calculator</button>
+    <button class="tab-btn" onclick="switchTab('invoice',this)">🧾 Invoice</button>
+    <button class="tab-btn" onclick="switchTab('tax',this)">📊 KRA Tax</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ════ RATE CALCULATOR ════ -->
+<div class="tab-panel active" id="tab-rate">
+  <div class="card">
+    <div class="card-title">💰 Your Income Goals</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Monthly take-home target (Ksh)</label>
+        <input type="number" id="monthly-income" value="100000" oninput="calcRate()">
+      </div>
+      <div class="form-group">
+        <label>Monthly expenses (Ksh)</label>
+        <input type="number" id="monthly-expenses" value="30000" oninput="calcRate()">
+      </div>
+      <div class="form-group">
+        <label>Billable hours per week</label>
+        <input type="number" id="billable-hours" value="30" min="1" max="60" oninput="calcRate()">
+      </div>
+      <div class="form-group">
+        <label>Weeks off per year</label>
+        <input type="number" id="weeks-off" value="4" min="0" max="20" oninput="calcRate()">
+      </div>
+      <div class="form-group">
+        <label>Platform fee %</label>
+        <select id="platform-fee" onchange="calcRate()">
+          <option value="0">None — Local / Direct (0%)</option>
+          <option value="20" selected>Upwork (20%)</option>
+          <option value="20">Fiverr (20%)</option>
+          <option value="10">Toptal (10%)</option>
+          <option value="15">PeoplePerHour (15%)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Client type</label>
+        <div class="segment" id="client-type">
+          <button class="seg-btn" onclick="setClient('local',this)">🇰🇪 Local</button>
+          <button class="seg-btn active" onclick="setClient('intl',this)">🌍 International</button>
+          <button class="seg-btn" onclick="setClient('both',this)">Both</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🎯 Your Recommended Rates</div>
+    <div class="results-grid">
+      <div class="result-box highlight"><div class="result-label">Min Hourly Rate</div><div class="result-value" id="r-hourly">Ksh 0</div><div class="result-sub" id="r-hourly-usd"></div></div>
+      <div class="result-box highlight"><div class="result-label">Daily Rate (8 hrs)</div><div class="result-value" id="r-daily">Ksh 0</div><div class="result-sub" id="r-daily-usd"></div></div>
+      <div class="result-box"><div class="result-label">1-Week Project</div><div class="result-value" id="r-weekly">Ksh 0</div><div class="result-sub" id="r-weekly-usd"></div></div>
+      <div class="result-box"><div class="result-label">Platform-Adjusted Rate</div><div class="result-value" id="r-adjusted">Ksh 0</div><div class="result-sub" id="r-adjusted-sub"></div></div>
+    </div>
+    <div id="underprice-warn" class="warning-box" style="display:none">⚠️ <strong>You're undercharging!</strong> Your rate is below what you need to meet your income goal.</div>
+    <div class="tip-box">💡 <strong>Tip:</strong> Most Kenyan freelancers underprice by <strong>40%</strong>. Your rate must cover taxes, sick days, and slow months.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">🔍 Check Your Current Rate</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Your current hourly rate (Ksh)</label><input type="number" id="current-rate" placeholder="What do you charge now?" oninput="checkRate()"></div>
+      <div class="form-group" style="justify-content:flex-end;padding-top:22px;"><div id="rate-check-result" style="font-size:.9rem;color:var(--muted)">Enter your rate to check →</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ INVOICE ════ -->
+<div class="tab-panel" id="tab-invoice">
+  <div class="card">
+    <div class="card-title">👤 Your Details</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Your Name</label><input type="text" id="inv-your-name" placeholder="Wanjiku Kamau" oninput="updatePreview()"></div>
+      <div class="form-group"><label>Your Email</label><input type="email" id="inv-your-email" placeholder="wanjiku@email.com" oninput="updatePreview()"></div>
+      <div class="form-group"><label>Your Phone</label><input type="text" id="inv-your-phone" placeholder="0712 345 678" oninput="updatePreview()"></div>
+      <div class="form-group"><label>Currency</label>
+        <select id="inv-currency" onchange="updatePreview()">
+          <option value="Ksh" selected>🇰🇪 KES — Kenyan Shilling</option>
+          <option value="USD">🇺🇸 USD — US Dollar</option>
+          <option value="GBP">🇬🇧 GBP — British Pound</option>
+          <option value="EUR">🇪🇺 EUR — Euro</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🏢 Client Details</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Client Name / Company</label><input type="text" id="inv-client-name" placeholder="TechCorp Kenya" oninput="updatePreview()"></div>
+      <div class="form-group"><label>Client Email</label><input type="email" id="inv-client-email" placeholder="client@company.com" oninput="updatePreview()"></div>
+      <div class="form-group full"><label>Invoice Number</label><input type="text" id="inv-number" oninput="updatePreview()"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📦 Line Items</div>
+    <div style="display:grid;grid-template-columns:1fr 70px 110px 30px;gap:8px;margin-bottom:6px;padding:0 2px">
+      <span style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Description</span>
+      <span style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Qty</span>
+      <span style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Unit Price</span>
+      <span></span>
+    </div>
+    <div id="invoice-items"></div>
+    <button class="btn btn-outline btn-sm" onclick="addItem()" style="margin-top:10px">+ Add Line Item</button>
+    <div class="divider"></div>
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="vat-toggle" onchange="updatePreview()"><span class="slider"></span></label>
+      <span style="font-size:.9rem">Add 16% VAT <span style="color:var(--muted);font-size:.78rem">(Kenya standard rate)</span></span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📱 M-Pesa Payment Details</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Till No. / Paybill</label><input type="text" id="inv-mpesa-till" placeholder="e.g. 174379" oninput="updatePreview()"></div>
+      <div class="form-group"><label>Account / Reference</label><input type="text" id="inv-mpesa-account" placeholder="Your Name / Invoice No." oninput="updatePreview()"></div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="downloadPDF()">⬇️ Download PDF</button>
+    <button class="btn btn-outline" onclick="shareWhatsApp()">💬 Share via WhatsApp</button>
+  </div>
+  <div class="premium-section" style="margin-top:20px">
+    <div class="premium-overlay" id="inv-lock" onclick="openPayModal()">
+      <div class="lock-content"><div class="lock-icon">🔒</div><div class="lock-label">Premium Features — Ksh 399/month</div><div class="lock-sub">Logo · Saved clients · Invoice history · Recurring templates · WHT deduction</div></div>
+    </div>
+    <div style="opacity:.25;pointer-events:none" class="premium-inner">
+      <div class="card-title" style="margin-bottom:14px">⭐ Premium Invoice Features</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Upload Logo</label><input type="file" disabled></div>
+        <div class="form-group"><label>Saved Clients</label><select disabled><option>Select saved client...</option></select></div>
+      </div>
+      <div class="toggle-row"><label class="toggle"><input type="checkbox" disabled><span class="slider"></span></label><span style="font-size:.9rem">Withholding Tax (5%) deduction</span></div>
+      <div class="toggle-row"><label class="toggle"><input type="checkbox" disabled><span class="slider"></span></label><span style="font-size:.9rem">Recurring invoice template</span></div>
+    </div>
+  </div>
+  <div id="invoice-preview"><div id="preview-content"></div></div>
+</div>
+
+<!-- ════ KRA TAX ════ -->
+<div class="tab-panel" id="tab-tax">
+  <div class="card">
+    <div class="card-title">📊 Annual Income</div>
+    <div class="form-grid">
+      <div class="form-group full"><label>Estimated Annual Income (Ksh) — all sources: Upwork, Fiverr, M-Pesa, bank</label><input type="number" id="annual-income" value="1200000" oninput="calcTax()"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🧮 Tax Breakdown</div>
+    <div id="tax-regime-label" class="success-box" style="margin-bottom:14px"></div>
+    <div style="margin-bottom:16px"><div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Tax Bands</div><div id="tax-bands"></div></div>
+    <div class="results-grid">
+      <div class="result-box highlight"><div class="result-label">Annual Tax Owed</div><div class="result-value" id="t-annual">Ksh 0</div></div>
+      <div class="result-box highlight"><div class="result-label">Set Aside Monthly</div><div class="result-value" id="t-monthly">Ksh 0</div><div class="result-sub">Save this every month 💚</div></div>
+      <div class="result-box"><div class="result-label">Personal Relief Applied</div><div class="result-value" id="t-relief">Ksh 28,800</div><div class="result-sub">Annual deduction</div></div>
+      <div class="result-box"><div class="result-label">Effective Tax Rate</div><div class="result-value" id="t-effective">0%</div></div>
+    </div>
+    <div class="warning-box">⚠️ <strong>Filing Deadline:</strong> June 30 every year on <a href="https://itax.kra.go.ke" target="_blank" style="color:#ff8fa3">iTax.kra.go.ke</a><br><strong>Late penalty:</strong> Ksh 20,000 or 5% of tax due — whichever is higher<br>📌 Upwork, Fiverr, PayPal &amp; M-Pesa income is all taxable in Kenya.</div>
+  </div>
+  <div class="premium-section">
+    <div class="premium-overlay" id="tax-lock" onclick="openPayModal()">
+      <div class="lock-content"><div class="lock-icon">🔒</div><div class="lock-label">Premium Tax Features — Ksh 399/month</div><div class="lock-sub">Expense deductions · WHT offset · VAT threshold alert · Quarterly schedule</div></div>
+    </div>
+    <div style="opacity:.25;pointer-events:none" class="premium-inner">
+      <div class="card-title" style="margin-bottom:14px">⭐ Reduce Your Tax Bill</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Internet / Data (Ksh/yr)</label><input type="number" placeholder="e.g. 36000" disabled></div>
+        <div class="form-group"><label>Equipment — Laptop, Desk</label><input type="number" placeholder="e.g. 80000" disabled></div>
+        <div class="form-group"><label>Software Subscriptions</label><input type="number" placeholder="e.g. 24000" disabled></div>
+        <div class="form-group"><label>Withholding Tax Certificates</label><input type="number" placeholder="Offset your bill" disabled></div>
+      </div>
+      <div class="success-box" style="margin-top:12px">💡 VAT threshold: Ksh 5,000,000/year. We'll alert you when you're approaching it.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .content -->
+
+<!-- ════════════════════════════════════════════════════
+     AUTH MODAL (Login / Register)
+════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuthModal()">✕</button>
+    <div style="font-size:2rem;margin-bottom:8px">👤</div>
+    <h2>Welcome to FreelancerPro KE</h2>
+    <p style="color:var(--muted);font-size:.85rem;margin:6px 0 16px">Sign in to save your premium access across all devices.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuth('login',this)">Login</button>
+      <button class="auth-tab" onclick="switchAuth('register',this)">Create Account</button>
+    </div>
+    <div id="auth-error" class="error-box" style="display:none"></div>
+
+    <!-- LOGIN -->
+    <div class="auth-panel active" id="auth-login">
+      <div class="form-group-modal"><label>Email</label><input type="email" id="login-email" placeholder="your@email.com"></div>
+      <div class="form-group-modal"><label>Password</label><input type="password" id="login-password" placeholder="Your password"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:6px" id="login-btn" onclick="doLogin()">Login →</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="auth-panel" id="auth-register">
+      <div class="form-group-modal"><label>Full Name</label><input type="text" id="reg-name" placeholder="Wanjiku Kamau"></div>
+      <div class="form-group-modal"><label>Email</label><input type="email" id="reg-email" placeholder="your@email.com"></div>
+      <div class="form-group-modal"><label>Password (min 8 characters)</label><input type="password" id="reg-password" placeholder="Choose a strong password"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:6px" id="reg-btn" onclick="doRegister()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAYMENT MODAL (M-Pesa STK Push)
+════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="pay-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closePayModal()">✕</button>
+
+    <!-- State 1: Enter phone -->
+    <div class="stk-state active" id="state-form">
+      <div class="steps"><div class="step active" id="s1"></div><div class="step" id="s2"></div><div class="step" id="s3"></div></div>
+      <div style="font-size:2rem;margin-bottom:8px">⭐</div>
+      <h2>Upgrade to Premium</h2>
+      <div class="modal-price">Ksh 399 <span>/ month</span></div>
+      <ul class="feature-list">
+        <li>Upload your logo on every invoice</li>
+        <li>Save unlimited client profiles</li>
+        <li>Full invoice history &amp; templates</li>
+        <li>Tax expense deduction calculator</li>
+        <li>VAT registration threshold alert</li>
+        <li>Quarterly KRA tax reminders</li>
+        <li>Late payment reminder generator</li>
+        <li>Withholding tax (5%) offset tool</li>
+      </ul>
+      <div class="mpesa-logo"><span style="font-size:1.5rem">📱</span><div>Pay securely via <strong>M-Pesa STK Push</strong>. No card needed.</div></div>
+      <div id="pay-error" class="error-box" style="display:none"></div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:8px">Enter your M-Pesa phone number:</div>
+      <div class="phone-input-row">
+        <div class="phone-prefix">🇰🇪 +254</div>
+        <input type="tel" id="mpesa-phone" placeholder="712 345 678" maxlength="9" oninput="clearPayError()" style="flex:1">
+      </div>
+      <button class="btn btn-gold" style="width:100%;margin-top:10px" id="pay-btn" onclick="triggerSTK()">💚 Pay Ksh 399 via M-Pesa</button>
+      <div style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:10px">Secure · Cancel anytime · No hidden fees</div>
+    </div>
+
+    <!-- State 2: Waiting -->
+    <div class="stk-state" id="state-waiting">
+      <div class="steps"><div class="step done"></div><div class="step active"></div><div class="step"></div></div>
+      <div class="stk-spinner"></div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;margin-bottom:8px">📲 Check Your Phone!</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--accent);margin:8px 0 4px" id="waiting-phone-display"></div>
+      <div style="font-size:.88rem;color:var(--muted);line-height:1.7;margin:10px 0"><span class="pulse-dot"></span>Enter your <strong style="color:var(--text)">M-Pesa PIN</strong> to complete payment.</div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:8px;padding:10px;background:var(--bg3);border-radius:8px">⏱ Checking for payment every 3 seconds...</div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:14px;width:100%" onclick="backToForm()">← Use a different number</button>
+    </div>
+
+    <!-- State 3: Success -->
+    <div class="stk-state" id="state-success">
+      <div class="steps"><div class="step done"></div><div class="step done"></div><div class="step done"></div></div>
+      <div style="font-size:3.5rem;margin-bottom:12px">✅</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--accent);margin-bottom:8px">Payment Confirmed!</div>
+      <div style="font-size:.9rem;color:var(--muted);line-height:1.7;margin-bottom:20px">Welcome to <strong style="color:var(--text)">FreelancerPro KE Premium</strong>! 🎉<br>All premium features are now unlocked.</div>
+      <div id="mpesa-receipt" style="background:var(--bg3);border-radius:10px;padding:12px;font-size:.82rem;color:var(--muted);margin-bottom:16px;font-family:monospace;display:none"></div>
+      <button class="btn btn-primary" style="width:100%" onclick="closePayModal()">Start Using Premium →</button>
+    </div>
+
+    <!-- State 4: Failed -->
+    <div class="stk-state" id="state-failed">
+      <div style="font-size:3rem;margin-bottom:12px">❌</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;color:var(--red);margin-bottom:8px">Payment Not Completed</div>
+      <div id="fail-reason" style="font-size:.88rem;color:var(--muted);line-height:1.6;margin-bottom:20px"></div>
+      <button class="btn btn-gold" style="width:100%;margin-bottom:10px" onclick="resetPay()">🔄 Try Again</button>
+      <button class="btn btn-ghost" style="width:100%" onclick="closePayModal()">Maybe Later</button>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  Free forever &nbsp;·&nbsp; <a href="#" onclick="openPayModal()">Upgrade Premium — Ksh 399/month</a> &nbsp;·&nbsp; 🇰🇪 Built for Kenyan Freelancers
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════
+// CONFIG — no changes needed after Vercel deploy
+// ══════════════════════════════════════════════════════
+const API = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+
+// ══════════════════════════════════════════════════════
+// APP STATE
+// ══════════════════════════════════════════════════════
+let clientType     = 'intl';
+let invoiceItems   = [];
+let invoiceCounter = parseInt(localStorage.getItem('inv-counter') || '1');
+let pollInterval   = null;
+let currentCheckoutId = null;
+let currentUser    = null; // { id, email, name, premium, access_token }
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('inv-number').value = 'INV-' + String(invoiceCounter).padStart(3,'0');
+  addItem(); addItem();
+  calcRate(); calcTax(); updatePreview();
+  await restoreSession();
+});
+
+// ══════════════════════════════════════════════════════
+// SESSION MANAGEMENT
+// ══════════════════════════════════════════════════════
+async function restoreSession() {
+  const token = localStorage.getItem('fp_token');
+  if (!token) return;
+  try {
+    const res  = await fetch(`${API}/api/me`, { headers: { Authorization: `Bearer ${token}` } });
+    const data = await res.json();
+    if (data.success) {
+      currentUser = { ...data.user, access_token: token };
+      updateHeaderUI();
+      if (currentUser.premium) unlockPremium();
+    } else {
+      localStorage.removeItem('fp_token');
+    }
+  } catch (e) {
+    // Offline or backend not deployed yet — fallback to localStorage flag
+    const localPremium = localStorage.getItem('premiumUnlocked') === 'true';
+    if (localPremium) unlockPremium();
+  }
+}
+
+function updateHeaderUI() {
+  if (!currentUser) {
+    document.getElementById('user-chip').classList.remove('show');
+    document.getElementById('btn-auth').style.display = 'block';
+    document.getElementById('btn-logout').classList.remove('show');
+    document.getElementById('btn-upgrade').style.display = currentUser?.premium ? 'none' : 'block';
+    return;
+  }
+  document.getElementById('user-name-chip').textContent = currentUser.name;
+  document.getElementById('premium-dot').style.display  = currentUser.premium ? 'block' : 'none';
+  document.getElementById('user-chip').classList.add('show');
+  document.getElementById('btn-auth').style.display     = 'none';
+  document.getElementById('btn-logout').classList.add('show');
+  document.getElementById('btn-upgrade').style.display  = currentUser.premium ? 'none' : 'block';
+}
+
+function logout() {
+  localStorage.removeItem('fp_token');
+  localStorage.removeItem('premiumUnlocked');
+  currentUser = null;
+  updateHeaderUI();
+  lockPremium();
+}
+
+// ══════════════════════════════════════════════════════
+// AUTH MODAL
+// ══════════════════════════════════════════════════════
+function openAuthModal()  { document.getElementById('auth-modal').classList.add('show'); }
+function closeAuthModal() { document.getElementById('auth-modal').classList.remove('show'); clearAuthError(); }
+function clearAuthError() { document.getElementById('auth-error').style.display = 'none'; }
+function showAuthError(m) { const e = document.getElementById('auth-error'); e.textContent = m; e.style.display = 'block'; }
+
+function switchAuth(tab, btn) {
+  document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('auth-'+tab).classList.add('active');
+  clearAuthError();
+}
+
+async function doLogin() {
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!email || !password) return showAuthError('Please enter your email and password.');
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.textContent = 'Logging in...';
+  try {
+    const res  = await fetch(`${API}/api/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
+    const data = await res.json();
+    if (!data.success) return showAuthError(data.error || 'Login failed.');
+    localStorage.setItem('fp_token', data.access_token);
+    currentUser = { ...data.user, access_token: data.access_token };
+    updateHeaderUI();
+    if (currentUser.premium) { unlockPremium(); localStorage.setItem('premiumUnlocked','true'); }
+    closeAuthModal();
+  } catch (e) {
+    showAuthError('Cannot reach server. Check your internet connection.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Login →';
+  }
+}
+
+async function doRegister() {
+  const name     = document.getElementById('reg-name').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  if (!name || !email || !password) return showAuthError('Please fill in all fields.');
+  if (password.length < 8) return showAuthError('Password must be at least 8 characters.');
+  const btn = document.getElementById('reg-btn');
+  btn.disabled = true; btn.textContent = 'Creating account...';
+  try {
+    const res  = await fetch(`${API}/api/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name, email, password }) });
+    const data = await res.json();
+    if (!data.success) return showAuthError(data.error || 'Registration failed.');
+    localStorage.setItem('fp_token', data.access_token);
+    currentUser = { ...data.user, access_token: data.access_token };
+    updateHeaderUI();
+    closeAuthModal();
+  } catch (e) {
+    showAuthError('Cannot reach server. Check your internet connection.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Create Account →';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════
+// RATE CALCULATOR
+// ══════════════════════════════════════════════════════
+function setClient(type, btn) {
+  clientType = type;
+  document.querySelectorAll('#client-type .seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); calcRate();
+}
+
+function calcRate() {
+  const income   = parseFloat(document.getElementById('monthly-income').value)   || 0;
+  const expenses = parseFloat(document.getElementById('monthly-expenses').value)  || 0;
+  const hrs      = parseFloat(document.getElementById('billable-hours').value)    || 30;
+  const wOff     = parseFloat(document.getElementById('weeks-off').value)          || 4;
+  const fee      = parseFloat(document.getElementById('platform-fee').value)       || 0;
+  const wWorked  = 52 - wOff;
+  const billable = hrs * wWorked;
+  const base     = billable > 0 ? ((income + expenses) * 12) / billable : 0;
+  const adjusted = fee > 0 ? base / (1 - fee/100) : base;
+  const daily    = base * 8, weekly = base * hrs * 5;
+  const USD=130, GBP=165, EUR=140;
+  const intl = clientType !== 'local';
+  document.getElementById('r-hourly').textContent   = ksh(base);
+  document.getElementById('r-daily').textContent    = ksh(daily);
+  document.getElementById('r-weekly').textContent   = ksh(weekly);
+  document.getElementById('r-adjusted').textContent = ksh(adjusted);
+  document.getElementById('r-hourly-usd').textContent  = intl ? `$${(base/USD).toFixed(1)} · £${(base/GBP).toFixed(1)} · €${(base/EUR).toFixed(1)}` : '';
+  document.getElementById('r-daily-usd').textContent   = intl ? `$${(daily/USD).toFixed(0)} · £${(daily/GBP).toFixed(0)} · €${(daily/EUR).toFixed(0)}` : '';
+  document.getElementById('r-weekly-usd').textContent  = intl ? `$${(weekly/USD).toFixed(0)} · £${(weekly/GBP).toFixed(0)} · €${(weekly/EUR).toFixed(0)}` : '';
+  document.getElementById('r-adjusted-sub').textContent = fee > 0 ? `Charge this to net your target after ${fee}% platform fee` : 'No platform fee';
+  checkRate();
+}
+
+function checkRate() {
+  const current  = parseFloat(document.getElementById('current-rate').value);
+  const income   = parseFloat(document.getElementById('monthly-income').value)   || 0;
+  const expenses = parseFloat(document.getElementById('monthly-expenses').value)  || 0;
+  const hrs      = parseFloat(document.getElementById('billable-hours').value)    || 30;
+  const wOff     = parseFloat(document.getElementById('weeks-off').value)          || 4;
+  const base     = ((income+expenses)*12) / (hrs*(52-wOff));
+  const warn = document.getElementById('underprice-warn'), res = document.getElementById('rate-check-result');
+  if (!current) { warn.style.display='none'; res.textContent='Enter your rate to check →'; res.style.color='var(--muted)'; return; }
+  if (current < base) { warn.style.display='block'; res.innerHTML=`<span style="color:var(--red)">❌ ${ksh(current)}/hr — ${ksh(base-current)} below minimum</span>`; }
+  else { warn.style.display='none'; res.innerHTML=`<span style="color:var(--accent)">✅ Great rate! ${ksh(current-base)} above your minimum</span>`; }
+}
+
+function ksh(n) { return 'Ksh ' + Math.round(n).toLocaleString('en-KE'); }
+
+// ══════════════════════════════════════════════════════
+// INVOICE
+// ══════════════════════════════════════════════════════
+function addItem() {
+  invoiceItems.push({ id: Date.now()+Math.random(), desc:'', qty:1, price:0 });
+  renderItems();
+}
+function removeItem(id) { invoiceItems = invoiceItems.filter(i => i.id !== id); renderItems(); updatePreview(); }
+function renderItems() {
+  const c = document.getElementById('invoice-items'); c.innerHTML = '';
+  invoiceItems.forEach((item, idx) => {
+    const row = document.createElement('div'); row.className = 'invoice-row';
+    row.innerHTML = `
+      <input type="text" placeholder="e.g. Website Design" value="${item.desc}" oninput="invoiceItems[${idx}].desc=this.value;updatePreview()">
+      <input type="number" placeholder="1" value="${item.qty}" min="1" oninput="invoiceItems[${idx}].qty=parseFloat(this.value)||1;updatePreview()" style="text-align:center">
+      <input type="number" placeholder="0" value="${item.price||''}" min="0" oninput="invoiceItems[${idx}].price=parseFloat(this.value)||0;updatePreview()">
+      <button class="btn btn-sm btn-danger-sm" onclick="removeItem(${item.id})">✕</button>`;
+    c.appendChild(row);
+  });
+}
+function updatePreview() {
+  const name=document.getElementById('inv-your-name').value||'Your Name',email=document.getElementById('inv-your-email').value||'your@email.com',phone=document.getElementById('inv-your-phone').value||'';
+  const cn=document.getElementById('inv-client-name').value||'Client',ce=document.getElementById('inv-client-email').value||'',invNo=document.getElementById('inv-number').value||'INV-001';
+  const cur=document.getElementById('inv-currency').value,vat=document.getElementById('vat-toggle').checked;
+  const till=document.getElementById('inv-mpesa-till').value,acc=document.getElementById('inv-mpesa-account').value;
+  const sub=invoiceItems.reduce((s,i)=>s+i.qty*i.price,0),vatA=vat?sub*.16:0,total=sub+vatA;
+  const today=new Date().toLocaleDateString('en-KE',{day:'2-digit',month:'long',year:'numeric'});
+  const due=new Date(Date.now()+14*86400000).toLocaleDateString('en-KE',{day:'2-digit',month:'long',year:'numeric'});
+  const rows=invoiceItems.map(i=>`<tr><td>${i.desc||'—'}</td><td style="text-align:center">${i.qty}</td><td style="text-align:right">${cur} ${i.price.toLocaleString()}</td><td style="text-align:right"><strong>${cur} ${(i.qty*i.price).toLocaleString()}</strong></td></tr>`).join('');
+  const mpesa=till?`<div class="mpesa-info"><strong>💚 Pay via M-Pesa</strong><br>Till/Paybill: <strong>${till}</strong>${acc?` · Account: <strong>${acc}</strong>`:''}</div>`:'';
+  document.getElementById('preview-content').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+      <div><h2>INVOICE</h2><div class="inv-meta">${invNo} · Issued: ${today} · Due: ${due}</div></div>
+      <div style="text-align:right;font-size:.82rem;color:#555;line-height:1.7"><strong style="font-size:1rem;color:#111">${name}</strong><br>${email}${phone?'<br>'+phone:''}</div>
+    </div>
+    <div style="background:#f9f9f9;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.82rem"><span style="color:#888">Bill To:</span> <strong>${cn}</strong>${ce?` <span style="color:#888">&lt;${ce}&gt;</span>`:''}</div>
+    <table><thead><tr><th>Description</th><th style="text-align:center">Qty</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Amount</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="totals-row"><table class="totals-table">
+      <tr><td style="color:#888">Subtotal</td><td style="text-align:right">${cur} ${sub.toLocaleString()}</td></tr>
+      ${vat?`<tr><td style="color:#888">VAT (16%)</td><td style="text-align:right">${cur} ${vatA.toLocaleString()}</td></tr>`:''}
+      <tr class="total-final"><td><strong>Total</strong></td><td style="text-align:right"><strong>${cur} ${total.toLocaleString()}</strong></td></tr>
+    </table></div>${mpesa}`;
+}
+function downloadPDF() {
+  const {jsPDF}=window.jspdf,doc=new jsPDF();
+  const name=document.getElementById('inv-your-name').value||'Your Name',email=document.getElementById('inv-your-email').value||'';
+  const cn=document.getElementById('inv-client-name').value||'Client',invNo=document.getElementById('inv-number').value||'INV-001';
+  const cur=document.getElementById('inv-currency').value,vat=document.getElementById('vat-toggle').checked;
+  const till=document.getElementById('inv-mpesa-till').value,acc=document.getElementById('inv-mpesa-account').value;
+  const sub=invoiceItems.reduce((s,i)=>s+i.qty*i.price,0),vatA=vat?sub*.16:0,total=sub+vatA;
+  const today=new Date().toLocaleDateString('en-KE',{day:'2-digit',month:'long',year:'numeric'});
+  const due=new Date(Date.now()+14*86400000).toLocaleDateString('en-KE',{day:'2-digit',month:'long',year:'numeric'});
+  doc.setFillColor(0,200,150);doc.rect(0,0,210,30,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(24);doc.text('INVOICE',14,20);
+  doc.setFontSize(9);doc.text(`${invNo}  ·  ${today}  ·  Due: ${due}`,100,20);
+  doc.setTextColor(30,30,30);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text(name,14,42);
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(100,100,100);doc.text(email,14,48);
+  doc.setFontSize(9);doc.setTextColor(150,150,150);doc.text('BILL TO',14,60);
+  doc.setTextColor(30,30,30);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text(cn,14,67);
+  let y=82;doc.setFillColor(245,245,245);doc.rect(14,y-6,182,9,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(120,120,120);
+  doc.text('DESCRIPTION',16,y);doc.text('QTY',122,y,{align:'right'});doc.text('UNIT PRICE',158,y,{align:'right'});doc.text('AMOUNT',196,y,{align:'right'});
+  doc.setFont('helvetica','normal');doc.setTextColor(30,30,30);doc.setFontSize(9);y+=9;
+  invoiceItems.forEach(item=>{
+    doc.text(String(item.desc||'—'),16,y);doc.text(String(item.qty),122,y,{align:'right'});
+    doc.text(`${cur} ${item.price.toLocaleString()}`,158,y,{align:'right'});doc.text(`${cur} ${(item.qty*item.price).toLocaleString()}`,196,y,{align:'right'});
+    y+=7;doc.setDrawColor(230,230,230);doc.line(14,y-1,196,y-1);
+  });
+  y+=6;doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(100,100,100);
+  doc.text('Subtotal',140,y);doc.setTextColor(30,30,30);doc.text(`${cur} ${sub.toLocaleString()}`,196,y,{align:'right'});
+  if(vat){y+=7;doc.setTextColor(100,100,100);doc.text('VAT (16%)',140,y);doc.setTextColor(30,30,30);doc.text(`${cur} ${vatA.toLocaleString()}`,196,y,{align:'right'});}
+  y+=10;doc.setFillColor(0,200,150);doc.rect(128,y-7,68,11,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
+  doc.text('TOTAL',132,y);doc.text(`${cur} ${total.toLocaleString()}`,194,y,{align:'right'});
+  if(till){y+=18;doc.setFillColor(240,255,250);doc.rect(14,y-7,100,16,'F');doc.setTextColor(0,168,126);doc.setFont('helvetica','bold');doc.setFontSize(9);
+    doc.text('Pay via M-Pesa',18,y);doc.setFont('helvetica','normal');doc.setTextColor(30,30,30);doc.setFontSize(8.5);
+    doc.text(`Till/Paybill: ${till}${acc?'   Account: '+acc:''}`,18,y+6);}
+  doc.setTextColor(180,180,180);doc.setFontSize(7.5);doc.setFont('helvetica','normal');doc.text('Generated by FreelancerPro KE — freelancerprokes.com',14,286);
+  doc.save(`${invNo}-${cn.replace(/\s+/g,'-')}.pdf`);
+  invoiceCounter++;localStorage.setItem('inv-counter',invoiceCounter);
+  document.getElementById('inv-number').value='INV-'+String(invoiceCounter).padStart(3,'0');updatePreview();
+}
+function shareWhatsApp() {
+  const cn=document.getElementById('inv-client-name').value||'Client',invNo=document.getElementById('inv-number').value,cur=document.getElementById('inv-currency').value;
+  const vat=document.getElementById('vat-toggle').checked,sub=invoiceItems.reduce((s,i)=>s+i.qty*i.price,0),vatA=vat?sub*.16:0,total=sub+vatA;
+  const till=document.getElementById('inv-mpesa-till').value,name=document.getElementById('inv-your-name').value||'Your Name';
+  const due=new Date(Date.now()+14*86400000).toLocaleDateString('en-KE',{day:'2-digit',month:'long',year:'numeric'});
+  let msg=`🧾 *Invoice ${invNo}*\nFrom: *${name}*\nTo: ${cn}\nDue: ${due}\n\n`;
+  invoiceItems.forEach(i=>{if(i.price>0)msg+=`• ${i.desc||'Service'} (x${i.qty}): ${cur} ${(i.qty*i.price).toLocaleString()}\n`;});
+  if(vat)msg+=`• VAT (16%): ${cur} ${vatA.toLocaleString()}\n`;
+  msg+=`\n💰 *Total: ${cur} ${total.toLocaleString()}*`;
+  if(till)msg+=`\n\n💚 *Pay via M-Pesa:*\nTill/Paybill: *${till}*`;
+  msg+=`\n\n_Generated by FreelancerPro KE_`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+// ══════════════════════════════════════════════════════
+// KRA TAX
+// ══════════════════════════════════════════════════════
+function calcTax() {
+  const annual=parseFloat(document.getElementById('annual-income').value)||0;
+  let tax=0,regime='',bands='';
+  if(annual<=5000000){
+    regime=`✅ <strong>Turnover Tax (TOT)</strong> applies — income under Ksh 5M. Rate: <strong>1.5%</strong> of gross revenue.`;
+    tax=annual*.015;
+    bands=`<div class="tax-band active-band"><span>Turnover Tax (all gross income)</span><span class="tax-rate">1.5%</span></div>`;
+  }else{
+    regime=`📋 <strong>PAYE Progressive Tax</strong> applies — income over Ksh 5M.`;
+    const b=[{f:0,t:288000,r:.10},{f:288000,t:388000,r:.25},{f:388000,t:6000000,r:.30},{f:6000000,t:9600000,r:.325},{f:9600000,t:Infinity,r:.35}];
+    b.forEach(x=>{const inB=Math.min(Math.max(annual-x.f,0),x.t-x.f);tax+=inB*x.r;const a=annual>x.f;bands+=`<div class="tax-band ${a?'active-band':''}"><span>Ksh ${x.f.toLocaleString()} – ${x.t===Infinity?'Above':x.t.toLocaleString()}</span><span class="tax-rate">${(x.r*100).toFixed(1)}%</span></div>`;});
+    tax=Math.max(0,tax-28800);
+  }
+  const eff=annual>0?(tax/annual*100).toFixed(1):0;
+  document.getElementById('tax-regime-label').innerHTML=regime;
+  document.getElementById('tax-bands').innerHTML=bands;
+  document.getElementById('t-annual').textContent=`Ksh ${Math.round(tax).toLocaleString()}`;
+  document.getElementById('t-monthly').textContent=`Ksh ${Math.round(tax/12).toLocaleString()}`;
+  document.getElementById('t-effective').textContent=eff+'%';
+}
+
+// ══════════════════════════════════════════════════════
+// PAYMENT MODAL
+// ══════════════════════════════════════════════════════
+function showState(id) {
+  ['state-form','state-waiting','state-success','state-failed'].forEach(s=>document.getElementById(s).classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function openPayModal()  { document.getElementById('pay-modal').classList.add('show'); showState('state-form'); }
+function closePayModal() { document.getElementById('pay-modal').classList.remove('show'); stopPolling(); }
+function clearPayError() { document.getElementById('pay-error').style.display='none'; }
+function showPayError(m) { const e=document.getElementById('pay-error'); e.textContent=m; e.style.display='block'; }
+function backToForm()    { stopPolling(); showState('state-form'); }
+function resetPay()      { document.getElementById('mpesa-phone').value=''; clearPayError(); showState('state-form'); }
+document.getElementById('pay-modal').addEventListener('click',e=>{if(e.target===document.getElementById('pay-modal'))closePayModal();});
+document.getElementById('auth-modal').addEventListener('click',e=>{if(e.target===document.getElementById('auth-modal'))closeAuthModal();});
+
+// ══════════════════════════════════════════════════════
+// M-PESA STK PUSH
+// ══════════════════════════════════════════════════════
+async function triggerSTK() {
+  const raw=document.getElementById('mpesa-phone').value.replace(/\s/g,'');
+  if(!raw||raw.length<9){showPayError('⚠️ Enter a valid M-Pesa number (e.g. 712 345 678)');return;}
+  const phone=raw.replace(/^0/,'');
+  const display='+254 '+phone.slice(0,3)+' '+phone.slice(3,6)+' '+phone.slice(6);
+  const btn=document.getElementById('pay-btn');
+  btn.disabled=true;btn.textContent='⏳ Sending STK Push...';
+  try {
+    const headers={'Content-Type':'application/json'};
+    if(currentUser?.access_token)headers['Authorization']=`Bearer ${currentUser.access_token}`;
+    const res=await fetch(`${API}/api/stkpush`,{method:'POST',headers,body:JSON.stringify({phone:raw,amount:399,accountReference:'FreelancerPro',description:'FreelancerPro KE Premium — Ksh 399/month'})});
+    const data=await res.json();
+    if(!data.success)throw new Error(data.error||'STK Push failed. Please try again.');
+    currentCheckoutId=data.CheckoutRequestID;
+    document.getElementById('waiting-phone-display').textContent=display;
+    showState('state-waiting');
+    startPolling(currentCheckoutId);
+  }catch(e){showPayError('❌ '+e.message);}
+  finally{btn.disabled=false;btn.textContent='💚 Pay Ksh 399 via M-Pesa';}
+}
+
+function startPolling(checkoutId) {
+  let attempts=0;
+  pollInterval=setInterval(async()=>{
+    attempts++;
+    if(attempts>20){stopPolling();document.getElementById('fail-reason').textContent='Payment timed out. The M-Pesa prompt expired. Please try again.';showState('state-failed');return;}
+    try{
+      const headers={'Content-Type':'application/json'};
+      if(currentUser?.access_token)headers['Authorization']=`Bearer ${currentUser.access_token}`;
+      const res=await fetch(`${API}/api/stkquery`,{method:'POST',headers,body:JSON.stringify({checkoutRequestId:checkoutId})});
+      const data=await res.json();
+      if(data.status==='SUCCESS'){
+        stopPolling();showState('state-success');
+        localStorage.setItem('premiumUnlocked','true');
+        unlockPremium();
+        if(currentUser){currentUser.premium=true;updateHeaderUI();}
+      }else if(data.status==='FAILED'){
+        stopPolling();document.getElementById('fail-reason').textContent=data.reason||'Payment not completed.';showState('state-failed');
+      }
+    }catch(e){console.warn('Poll error:',e.message);}
+  },3000);
+}
+
+function stopPolling(){if(pollInterval){clearInterval(pollInterval);pollInterval=null;}}
+
+// ══════════════════════════════════════════════════════
+// PREMIUM UNLOCK / LOCK
+// ══════════════════════════════════════════════════════
+function unlockPremium(){
+  document.querySelectorAll('.premium-overlay').forEach(o=>o.style.display='none');
+  document.querySelectorAll('.premium-inner').forEach(d=>{d.style.opacity='1';d.style.pointerEvents='auto';});
+  document.getElementById('btn-upgrade').style.display='none';
+}
+function lockPremium(){
+  document.querySelectorAll('.premium-overlay').forEach(o=>o.style.display='flex');
+  document.querySelectorAll('.premium-inner').forEach(d=>{d.style.opacity='.25';d.style.pointerEvents='none';});
+  document.getElementById('btn-upgrade').style.display='block';
+}
+</script>
+</body>
+</html>
