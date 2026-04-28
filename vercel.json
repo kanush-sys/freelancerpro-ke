@@ -1,10 +1,5 @@
 {
   "version": 2,
-  "functions": {
-    "api/*.js": {
-      "runtime": "@vercel/node@3.0.0"
-    }
-  },
   "routes": [
     { "src": "/api/stkpush",  "dest": "/api/stkpush.js"  },
     { "src": "/api/stkquery", "dest": "/api/stkquery.js"  },
@@ -12,11 +7,6 @@
     { "src": "/api/register", "dest": "/api/register.js"  },
     { "src": "/api/login",    "dest": "/api/login.js"     },
     { "src": "/api/me",       "dest": "/api/me.js"        },
-    {
-      "src": "/static/(.*)",
-      "headers": { "cache-control": "public, max-age=31536000, immutable" },
-      "dest": "/public/static/$1"
-    },
-    { "src": "/(.*)", "dest": "/public/index.html" }
+    { "src": "/(.*)",         "dest": "/public/index.html" }
   ]
 }
